@@ -1,0 +1,1 @@
+gcc main.c -L. -lft_malloc -Wl,-rpath=. 
