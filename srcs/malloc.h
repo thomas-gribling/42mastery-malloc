@@ -1,13 +1,35 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   malloc.h                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tgriblin <tgriblin@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/20 09:58:33 by tgriblin          #+#    #+#             */
-/*   Updated: 2026/03/20 09:59:09 by tgriblin         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include <unistd.h>
+#include <stddef.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <sys/mman.h>
 
-char	*ft_malloc(void);
+#include <stdio.h>
+
+#define TINY_MAX_BYTES 64 // 1 - 64 octets
+#define TINY_ZONE_SIZE 100 //getpagesize() * 4 * 4 // 64Ko
+#define MED_MAX_BYTES 512 // 65 - 512 octets
+#define MED_ZONE_SIZE TINY_ZONE_SIZE * 4 * 2 // 512Ko
+
+typedef struct s_block
+{
+	size_t	size;
+	int	free;
+	struct s_block	*next;
+}	t_block;
+
+typedef struct s_zone
+{
+	size_t	size;
+	t_block *blocks;
+}	t_zone;
+
+extern t_zone *z_tiny;
+extern t_zone *z_med;
+extern t_zone *z_big;
+
+void	ft_free(void *ptr);
+void	*ft_malloc(size_t size);
+void	*ft_realloc(void *ptr, size_t size);
+
+void	show_alloc_mem();

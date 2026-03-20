@@ -8,10 +8,10 @@ NAMELINK = libft_malloc.so
 SRCS = srcs/
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -fPIC -Iinclude
+CFLAGS = -fPIC -Iinclude
 LDFLAGS = -shared
 
-FILES = malloc.c
+FILES = malloc.c show_alloc_mem.c
 OBJECTS = $(addprefix $(SRCS), $(FILES:.c=.o))
 
 %.o: %.c
