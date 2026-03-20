@@ -11,7 +11,7 @@ CC = gcc
 CFLAGS = -fPIC -Iinclude
 LDFLAGS = -shared
 
-FILES = malloc.c show_alloc_mem.c
+FILES = malloc.c free.c show_alloc_mem.c
 OBJECTS = $(addprefix $(SRCS), $(FILES:.c=.o))
 
 %.o: %.c
@@ -25,7 +25,7 @@ $(NAME): $(OBJECTS)
 	ln -sf $(NAME) $(NAMELINK)
 
 clean:
-	rm -rf $(OBJECTS) $(OBJECTS_BONUS)
+	rm -rf $(OBJECTS)
 
 fclean: clean
 	rm -rf $(NAME) $(NAMELINK)

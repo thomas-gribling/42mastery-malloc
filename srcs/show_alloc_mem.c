@@ -17,30 +17,38 @@ void	ft_putaddress(void *ptr) { // todo
 
 void	show_alloc_mem() {
 	t_block *curr;
+	t_zone *curr2;
 
-	printf("TINY : %p\n", z_tiny);
 	curr = NULL;
-	if (z_tiny)
+	if (z_tiny) {
+		printf("TINY : %p\n", z_tiny);
 		curr = z_tiny->blocks;
-	while (curr) {
-		if (!curr->free)
-		printf("%p - %p : %ld bytes\n", curr, (curr + curr->size), curr->size);
-		curr = curr->next;
+		while (curr) {
+			if (!curr->free)
+				printf("%p - %p : %ld bytes\n", curr, (curr + curr->size), curr->size);
+			curr = curr->next;
+		}
 	}
-	printf("MEDIUM : %p\n", z_med);
 	curr = NULL;
-	if (z_med)
+	if (z_med) {
+		printf("MEDIUM : %p\n", z_med);
 		curr = z_med->blocks;
-	while (curr) {
-		printf("%p - %p : %ld bytes\n", curr, (curr + curr->size), curr->size);
-		curr = curr->next;
+		while (curr) {
+			if (!curr->free)
+				printf("%p - %p : %ld bytes\n", curr, (curr + curr->size), curr->size);
+			curr = curr->next;
+		}
 	}
-	printf("LARGE : %p\n", z_big);
-	curr = NULL;
-	if (z_big)
-		curr = z_big->blocks;
-	while (curr) {
-		printf("%p - %p : %ld bytes\n", curr, (curr + curr->size), curr->size);
-		curr = curr->next;
+	curr2 = NULL;
+	if (z_big) {
+		printf("LARGE : %p\n", z_big);
+		curr2 = z_big;
+		while (curr2) {
+			printf("%p - %p : %ld bytes\n", curr2, (curr2 + curr2->size), curr2->size);
+			curr2 = curr2->next;
+		}
 	}
+
+	if (!z_tiny && !z_med && !z_big)
+		printf("No memory allocated.\n");
 }

@@ -7,9 +7,9 @@
 #include <stdio.h>
 
 #define TINY_MAX_BYTES 64 // 1 - 64 octets
-#define TINY_ZONE_SIZE 100 //getpagesize() * 4 * 4 // 64Ko
+#define TINY_ZONE_SIZE getpagesize() * 16 // 64Ko
 #define MED_MAX_BYTES 512 // 65 - 512 octets
-#define MED_ZONE_SIZE TINY_ZONE_SIZE * 4 * 2 // 512Ko
+#define MED_ZONE_SIZE getpagesize() * 128 // 512Ko
 
 typedef struct s_block
 {
@@ -18,10 +18,12 @@ typedef struct s_block
 	struct s_block	*next;
 }	t_block;
 
+typedef struct s_zone t_zone;
 typedef struct s_zone
 {
 	size_t	size;
 	t_block *blocks;
+	t_zone	*next; // seulement pour le large
 }	t_zone;
 
 extern t_zone *z_tiny;

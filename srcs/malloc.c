@@ -12,6 +12,7 @@ t_zone	*create_zone(size_t zone_size) {
 		return NULL;
 	
 	zone->size = zone_size;
+	zone->next = NULL;
 
 	zone->blocks = (t_block *)((char *)zone + sizeof(t_zone));
 	zone->blocks->size = zone_size - sizeof(t_zone) - sizeof(t_block);
@@ -37,7 +38,8 @@ void split_block(t_block *block, size_t size) {
 
 	new->size = block->size - size - sizeof(t_block);
 	new->free = 1;
-	new->next = block->next;
+	new->next = NULL;
+
 	block->size = size;
 	block->next = new;
 }
@@ -59,6 +61,7 @@ void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) {
 	curr_zone = create_zone(zone_size);
 	if (!curr_zone)
 		return NULL;
+	split_block(curr_zone->blocks, size);
 	*zone = curr_zone;
 	
 	block = curr_zone->blocks;
@@ -68,32 +71,45 @@ void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) {
 
 }
 
-void *alloc_to_large(size_t size) {
+void *alloc_to_large(size_t size) { // utiliser le next de t_zone, chaque alloc est une zone qui possede un block unique (prenant toute la taille)
 	t_zone *zone;
-
 	zone = mmap(NULL, size + sizeof(t_zone) + sizeof(t_block), PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (zone == MAP_FAILED)
 		return NULL;
 	
 	zone->size = size;
+	zone->next = NULL;
 
 	zone->blocks = (t_block *)((char *)zone + sizeof(t_zone));
 	zone->blocks->size = size;
 	zone->blocks->free = 0;
 	zone->blocks->next = NULL;
 
-	z_big = zone;
+	t_zone *curr = z_big;
+	if (!curr)
+		z_big = zone;
+	while (curr) {
+		if (!curr->next) {
+			curr->next = zone;
+			break;
+		}
+		else
+			curr = curr->next;
+	}
 
 	return (zone->blocks + 1);
 }
 
 void	*ft_malloc(size_t size) {
-	size = (size + 7) & ~7;
+	if (size == 0)
+		return NULL;
+	
+	size = (size + 7) & ~7; // aligner la taille du malloc sur un multiple de 8
 
 	if (size <= TINY_MAX_BYTES)
 		return alloc_to_zone(&z_tiny, size, TINY_ZONE_SIZE);
 	else if (size <= MED_MAX_BYTES)
-		return alloc_to_zone(&z_med, size, MED_MAX_BYTES);
+		return alloc_to_zone(&z_med, size, MED_ZONE_SIZE);
 	else
 		return alloc_to_large(size);
 	return NULL;
