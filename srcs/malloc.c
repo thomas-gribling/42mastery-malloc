@@ -22,7 +22,7 @@ t_zone	*create_zone(size_t zone_size) {
 	return zone;
 }
 
-void	*find_free_block(t_zone *zone, size_t size) {
+static void	*find_free_block(t_zone *zone, size_t size) { // cherche un bloc free avec suffisament d'espace
 	t_block *b = zone->blocks;
 
 	while (b) {
@@ -80,7 +80,7 @@ void *alloc_to_large(size_t size) { // utiliser le next de t_zone, chaque alloc 
 	zone->size = size;
 	zone->next = NULL;
 
-	zone->blocks = (t_block *)((char *)zone + sizeof(t_zone));
+	zone->blocks = (t_block *)((void *)zone + sizeof(t_zone));
 	zone->blocks->size = size;
 	zone->blocks->free = 0;
 	zone->blocks->next = NULL;

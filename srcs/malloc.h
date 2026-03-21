@@ -4,7 +4,7 @@
 #include <sys/resource.h>
 #include <sys/mman.h>
 
-#include <stdio.h>
+#include <stdio.h> // pour les tests
 
 #define TINY_MAX_BYTES 64 // 1 - 64 octets
 #define TINY_ZONE_SIZE getpagesize() * 16 // 64Ko

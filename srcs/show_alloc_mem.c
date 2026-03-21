@@ -76,12 +76,14 @@ void	show_alloc_mem() {
 		ft_putstr("\n");
 		curr2 = z_big;
 		while (curr2) {
-			ft_putaddress((unsigned long)(curr2 + 1), 1);
-			ft_putstr(" - ");
-			ft_putaddress((unsigned long)(curr2 + curr2->size), 1);
-			ft_putstr(" : ");
-			ft_putsize(curr2->size);
-			ft_putstr(" bytes\n");
+			if (!curr2->blocks->free) {
+				ft_putaddress((unsigned long)(curr2 + 1), 1);
+				ft_putstr(" - ");
+				ft_putaddress((unsigned long)(curr2 + curr2->size), 1);
+				ft_putstr(" : ");
+				ft_putsize(curr2->size);
+				ft_putstr(" bytes\n");
+			}
 			curr2 = curr2->next;
 		}
 	}

@@ -18,9 +18,11 @@ int main(void) {
 	ft_malloc(MED_MAX_BYTES + 1);
 	ft_malloc(MED_MAX_BYTES + 9);
 	ft_malloc(MED_MAX_BYTES + 17);*/
-	char *s = ft_malloc(18);
-	ft_free(s);
-
+	char *a = ft_malloc(1);
+	char *large1 = ft_malloc(10000);
+	show_alloc_mem();
+	ft_free(a);
+	ft_free(large1);
 	show_alloc_mem();
 	return 0;
 }
