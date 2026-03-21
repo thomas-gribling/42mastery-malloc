@@ -1,19 +1,19 @@
 #include "malloc.h"
 
-void	ft_putstr(char *s) {
+static void	ft_putstr(char *s) {
 	int	i = -1;
 	while (s[++i])
 		write(0, &s[i], 1);
 }
 
-void	ft_putsize(size_t size) {
+static void	ft_putsize(size_t size) {
 	if (size > 9)
 		ft_putsize(size / 10);
 	char c = size % 10 + '0';
 	write(0, &c, 1);
 }
 
-void	ft_putaddress(unsigned long address, int first) {
+static void	ft_putaddress(unsigned long address, int first) {
 	if (first)
 		ft_putstr("0x");
 	if (address > 15)
@@ -39,7 +39,7 @@ void	show_alloc_mem() {
 		curr = z_tiny->blocks;
 		while (curr) {
 			if (!curr->free) {
-				ft_putaddress((unsigned long)curr, 1);
+				ft_putaddress((unsigned long)(curr + 1), 1);
 				ft_putstr(" - ");
 				ft_putaddress((unsigned long)(curr + curr->size), 1);
 				ft_putstr(" : ");
@@ -58,7 +58,7 @@ void	show_alloc_mem() {
 		curr = z_med->blocks;
 		while (curr) {
 			if (!curr->free) {
-				ft_putaddress((unsigned long)curr, 1);
+				ft_putaddress((unsigned long)(curr + 1), 1);
 				ft_putstr(" - ");
 				ft_putaddress((unsigned long)(curr + curr->size), 1);
 				ft_putstr(" : ");
@@ -76,7 +76,7 @@ void	show_alloc_mem() {
 		ft_putstr("\n");
 		curr2 = z_big;
 		while (curr2) {
-			ft_putaddress((unsigned long)curr2, 1);
+			ft_putaddress((unsigned long)(curr2 + 1), 1);
 			ft_putstr(" - ");
 			ft_putaddress((unsigned long)(curr2 + curr2->size), 1);
 			ft_putstr(" : ");
