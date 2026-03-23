@@ -22,11 +22,11 @@ t_zone	*create_zone(size_t zone_size) {
 	return zone;
 }
 
-static void	*find_free_block(t_zone *zone, size_t size) { // cherche un bloc free avec suffisament d'espace
+static void	*find_free_block(t_zone *zone, size_t size) { // cherche un bloc free
 	t_block *b = zone->blocks;
 
 	while (b) {
-		if (b->free && b->size >= size)
+		if (b->free)
 			return b;
 		b = b->next;
 	}
@@ -51,8 +51,10 @@ void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) {
 	if (curr_zone) {
 		block = find_free_block(curr_zone, size);
 		if (block) {
-			if (block->size > size + sizeof(t_block))
+			if (block->size >= size + sizeof(t_block))
 				split_block(block, size);
+			else
+				return NULL;
 			block->free = 0;
 			return (block + 1);
 		}
