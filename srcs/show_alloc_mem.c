@@ -71,6 +71,13 @@ void	show_alloc_mem() {
 				ft_putstr(" : ");
 				ft_putsize(curr->size);
 				ft_putstr(" bytes\n");
+			} else { // temporary, shows the last block (the free one)
+				ft_putaddress((unsigned long)(curr + 1), 1);
+				ft_putstr(" - ");
+				ft_putaddress((unsigned long)(curr + curr->size), 1);
+				ft_putstr(" : ");
+				ft_putsize(curr->size);
+				ft_putstr(" bytes\n");
 			}
 			curr = curr->next;
 		}

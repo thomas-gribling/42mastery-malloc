@@ -21,6 +21,11 @@ void	fuse_block(t_block *block) {
 		block->size += free_block->size + sizeof(t_block);
 		block->free = 1;
 		block->next = NULL; // TODO ne marche que si le next actuel est notre free_block
+
+		// UTILISER DIFFERENT BLOCS FREE, NE PLUS SE LIMITER A UN SEUL EN FIN DE ZONE
+
+		// modifier directement la memoire libre et relier les deux blocs adjacents a celui la, creerait un vide dans la memoire
+		// il faut directement deplacer les blocs
 	}
 
 }
@@ -51,7 +56,7 @@ void	ft_free(void *ptr) {
 		printf("%ld %ld\n", zone->size, block->size);
 		zone->blocks->free = 1;
 		//munmap(zone, zone->size);
-		// TODO remove cette zone de la liste chainee des zones, pour eviter le segfault
+		// TODO remove cette zone de la liste chainee des zones, pour eviter le segfault. rattacher les zones adjancentes et essayer de les deplacer pour eviter le vide
 		// TODO si c'est la derniere, la zone large devient nulle
 	}
 }

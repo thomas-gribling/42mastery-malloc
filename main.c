@@ -31,15 +31,34 @@ int main(void) {
 	void *a = ft_malloc(1);
 	void *b = ft_malloc(1);
 	show_alloc_mem();
-	ft_free(b);
 	ft_free(a);
 	show_alloc_mem();
+	ft_free(b);
+	show_alloc_mem();
+	write(0, "\n", 1);
 
-	a = ft_malloc(TINY_MAX_BYTES + 1);
+	/*a = ft_malloc(TINY_MAX_BYTES + 1);
 	b = ft_malloc(TINY_MAX_BYTES + 1);
 	show_alloc_mem();
-	ft_free(b);
 	ft_free(a);
 	show_alloc_mem();
+	ft_free(b);
+	show_alloc_mem();
+	write(0, "\n", 1);
+
+	a = ft_malloc(MED_MAX_BYTES + 1);
+	b = ft_malloc(MED_MAX_BYTES + 1);
+	show_alloc_mem();
+	ft_free(b);
+	show_alloc_mem();
+	ft_free(a);
+	show_alloc_mem();*/
 	return 0;
 }
+
+/*
+TODO LIST:
+- transformer les 3 globals en un seul array
+- realloc
+- pouvoir free le milieu / debut d'une zone (fonctionne uniquement sur le dernier bloc)
+*/
