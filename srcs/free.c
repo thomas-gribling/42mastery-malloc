@@ -12,12 +12,13 @@ static void	*find_free_block(t_block *block) { // cherche un bloc free, peu impo
 void	fuse_block(t_block *block) {
 	t_block *free_block = find_free_block(block);
 
-	if (!free_block) { // il n'y a plus d'espace libre, devenir l'espace libre
-		block->free = 1;
+	if (!free_block) { // il n'y a plus de bloc free, le devenir. normalement impossible
+		printf("ERROR, IMPOSSIBLE CASE\n");
+		//block->free = 1;
 		// TODO trouver un moyen de le bouger a la fin (un swap en loop jusqu'au bout ?)
 	}
 	else { // il y a de l'espace libre, fusionner notre bloc avec lui
-		block->size += free_block->size;
+		block->size += free_block->size + sizeof(t_block);
 		block->free = 1;
 		block->next = NULL; // TODO ne marche que si le next actuel est notre free_block
 	}
@@ -25,11 +26,26 @@ void	fuse_block(t_block *block) {
 }
 
 void	ft_free(void *ptr) {
+	if (!z_tiny && !z_med && !z_tiny)
+		return ;
+	if (!ptr)
+		return ;
+
 	t_block *block = ptr - sizeof(t_block);
 
 	if (block->size <= MED_MAX_BYTES) {
 		fuse_block(block);
-		// TODO si la nouvelle size est egale a la size de la zone, elle est vide, donc la delete (trouver laquelle avec la size)
+		if (block->size <= TINY_ZONE_SIZE
+				&& z_tiny->size == block->size + sizeof(t_block) + sizeof(t_zone)) { // la zone tiny est vide
+			munmap(z_tiny, z_tiny->size);
+			z_tiny = NULL;
+		}
+		else if (block->size > TINY_ZONE_SIZE && block->size <= MED_ZONE_SIZE
+				&& z_med->size == block->size + sizeof(t_block) + sizeof(t_zone)) { // la zone tiny est vide
+			munmap(z_med, z_med->size);
+			z_med = NULL;
+		}
+		return ;
 	} else {
 		t_zone *zone = (void *)block - sizeof(t_zone); // un seul block par zone pour la large, donc on peut facilement remonter
 		printf("%ld %ld\n", zone->size, block->size);
