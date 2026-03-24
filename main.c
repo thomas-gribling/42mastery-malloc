@@ -129,9 +129,3 @@ int main(void) {
 
 	return 0;
 }
-
-/*
-TODO LIST:
-- transformer les 3 globals en un seul array
-- realloc
-*/

@@ -26,9 +26,7 @@ typedef struct s_zone
 	t_zone	*next; // seulement pour le large
 }	t_zone;
 
-extern t_zone *z_tiny;
-extern t_zone *z_med;
-extern t_zone *z_big;
+extern t_zone *zo[3];
 
 void	ft_free(void *ptr);
 void	*ft_malloc(size_t size);

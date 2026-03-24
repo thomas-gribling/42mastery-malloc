@@ -1,8 +1,6 @@
 #include "malloc.h"
 
-t_zone *z_tiny;
-t_zone *z_med;
-t_zone *z_big;
+t_zone *zo[3] = {NULL, NULL, NULL};
 
 t_zone	*create_zone(size_t zone_size) {
 	t_zone *zone;
@@ -91,9 +89,9 @@ void *alloc_to_large(size_t size) { // utiliser le next de t_zone, chaque alloc 
 	zone->blocks->free = 0;
 	zone->blocks->next = NULL;
 
-	t_zone *curr = z_big;
+	t_zone *curr = zo[2];
 	if (!curr)
-		z_big = zone;
+		zo[2] = zone;
 	while (curr) {
 		if (!curr->next) {
 			curr->next = zone;
@@ -113,9 +111,9 @@ void	*ft_malloc(size_t size) {
 	size = (size + 7) & ~7; // aligner la taille du malloc sur un multiple de 8
 
 	if (size <= TINY_MAX_BYTES)
-		return alloc_to_zone(&z_tiny, size, TINY_ZONE_SIZE);
+		return alloc_to_zone(&zo[0], size, TINY_ZONE_SIZE);
 	else if (size <= MED_MAX_BYTES)
-		return alloc_to_zone(&z_med, size, MED_ZONE_SIZE);
+		return alloc_to_zone(&zo[1], size, MED_ZONE_SIZE);
 	else
 		return alloc_to_large(size);
 	return NULL;

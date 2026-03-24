@@ -26,7 +26,7 @@ static int	is_zone_empty(t_zone *zone) {
 	if (!zone)
 		return 1;
 	
-	if (zone == z_big) {
+	if (zone == zo[2]) {
 		if (!zone->next && (!zone->blocks || zone->blocks->free))
 			return 1;
 	}
@@ -43,24 +43,24 @@ void	show_alloc_mem() {
 	t_block *curr;
 	t_zone *curr2;
 
-	if (is_zone_empty(z_tiny) && is_zone_empty(z_med) && is_zone_empty(z_big)) {
+	if (is_zone_empty(zo[0]) && is_zone_empty(zo[1]) && is_zone_empty(zo[2])) {
 		ft_putstr("No memory allocated.\n");
 		return ;
 	}
 
 	curr = NULL;
-	if (!is_zone_empty(z_tiny)) {
+	if (!is_zone_empty(zo[0])) {
 		ft_putstr("TINY : ");
-		ft_putaddress((unsigned long)z_tiny, 1);
+		ft_putaddress((unsigned long)zo[0], 1);
 
 		ft_putstr(" ( size = ");
-		ft_putsize(z_tiny->size);
+		ft_putsize(zo[0]->size);
 		ft_putstr(" bytes, size block = ");
-		ft_putsize(z_tiny->size - sizeof(t_zone) - sizeof(t_block));
+		ft_putsize(zo[0]->size - sizeof(t_zone) - sizeof(t_block));
 		ft_putstr(" bytes)");
 
 		ft_putstr("\n");
-		curr = z_tiny->blocks;
+		curr = zo[0]->blocks;
 		while (curr) {
 			if (!curr->free) {
 				ft_putaddress((unsigned long)(curr + 1), 1);
@@ -82,18 +82,18 @@ void	show_alloc_mem() {
 	}
 
 	curr = NULL;
-	if (!is_zone_empty(z_med)) {
+	if (!is_zone_empty(zo[1])) {
 		ft_putstr("MEDIUM : ");
-		ft_putaddress((unsigned long)z_med, 1);
+		ft_putaddress((unsigned long)zo[1], 1);
 
 		ft_putstr(" ( size = ");
-		ft_putsize(z_med->size);
+		ft_putsize(zo[1]->size);
 		ft_putstr(" bytes, size block = ");
-		ft_putsize(z_med->size - sizeof(t_zone) - sizeof(t_block));
+		ft_putsize(zo[1]->size - sizeof(t_zone) - sizeof(t_block));
 		ft_putstr(" bytes)");
 
 		ft_putstr("\n");
-		curr = z_med->blocks;
+		curr = zo[1]->blocks;
 		while (curr) {
 			if (!curr->free) {
 				ft_putaddress((unsigned long)(curr + 1), 1);
@@ -115,11 +115,11 @@ void	show_alloc_mem() {
 	}
 
 	curr2 = NULL;
-	if (!is_zone_empty(z_big)) {
+	if (!is_zone_empty(zo[2])) {
 		ft_putstr("LARGE : ");
-		ft_putaddress((unsigned long)z_big, 1);
+		ft_putaddress((unsigned long)zo[2], 1);
 		ft_putstr("\n");
-		curr2 = z_big;
+		curr2 = zo[2];
 		while (curr2) {
 			if (!curr2->blocks->free) {
 				ft_putaddress((unsigned long)(curr2 + 1), 1);
