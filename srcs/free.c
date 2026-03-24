@@ -37,7 +37,7 @@ void	ft_free(void *ptr) {
 		t_zone *previous = NULL;
 
 		while (curr) {
-			if (curr == zone) {
+			if (curr == zone) { // AJOUTER MUNMAP !!!!!!!
 				if (!previous) // si pas de precedente, alors c'est la premiere (z_big), on fait de la next la nouvelle premiere
 					zo[2] = curr->next;
 				else // sinon, on rattache la precedente a la suivante
