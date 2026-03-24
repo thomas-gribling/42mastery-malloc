@@ -22,11 +22,13 @@ t_zone	*create_zone(size_t zone_size) {
 	return zone;
 }
 
-static void	*find_free_block(t_zone *zone, size_t size) { // cherche un bloc free
+static void	*find_free_block(t_zone *zone, size_t size) { // cherche un bloc free assez grand
 	t_block *b = zone->blocks;
 
 	while (b) {
-		if (b->free)
+		if (b->free && b->size >= size + sizeof(t_block))
+			return b;
+		if (b->free && b->size == size)
 			return b;
 		b = b->next;
 	}
@@ -34,13 +36,19 @@ static void	*find_free_block(t_zone *zone, size_t size) { // cherche un bloc fre
 }
 
 void split_block(t_block *block, size_t size) {
-	t_block *new = (t_block *)((char *)block + sizeof(t_block) + size);
+	t_block *new;
+	int space_left = block->size - size - sizeof(t_block);
 
-	new->size = block->size - size - sizeof(t_block);
-	new->free = 1;
-	new->next = NULL;
+	if (space_left > 0) { // si plus d'espace, ne pas garder le bloc free
+		new = (t_block *)((char *)block + sizeof(t_block) + size);
+		new->size = block->size - size - sizeof(t_block);
+		new->free = 1;
+		new->next = block->next;
+	} else
+		new = block->next;
 
 	block->size = size;
+	block->free = 0;
 	block->next = new;
 }
 
@@ -51,11 +59,10 @@ void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) {
 	if (curr_zone) {
 		block = find_free_block(curr_zone, size);
 		if (block) {
-			if (block->size >= size + sizeof(t_block))
+			if ((block->size >= size + sizeof(t_block)) || (block->size == size)) // inutile ?
 				split_block(block, size);
 			else
 				return NULL;
-			block->free = 0;
 			return (block + 1);
 		}
 	}
@@ -65,11 +72,8 @@ void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) {
 		return NULL;
 	split_block(curr_zone->blocks, size);
 	*zone = curr_zone;
-	
-	block = curr_zone->blocks;
-	block->free = 0;
 
-	return (block + 1);
+	return (curr_zone->blocks + 1);
 
 }
 

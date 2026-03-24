@@ -51,7 +51,7 @@ void	show_alloc_mem() {
 				ft_putaddress((unsigned long)(curr + curr->size), 1);
 				ft_putstr(" : ");
 				ft_putsize(curr->size);
-				ft_putstr(" bytes\n");
+				ft_putstr(" bytes (FREE BLOCK)\n");
 			}
 			curr = curr->next;
 		}
@@ -77,7 +77,7 @@ void	show_alloc_mem() {
 				ft_putaddress((unsigned long)(curr + curr->size), 1);
 				ft_putstr(" : ");
 				ft_putsize(curr->size);
-				ft_putstr(" bytes\n");
+				ft_putstr(" bytes (FREE BLOCK)\n");
 			}
 			curr = curr->next;
 		}
