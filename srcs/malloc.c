@@ -22,7 +22,7 @@ t_zone	*create_zone(size_t zone_size) {
 	return zone;
 }
 
-static void	*find_free_block(t_zone *zone, size_t size) { // cherche un bloc free assez grand
+void	*find_free_block(t_zone *zone, size_t size) { // cherche un bloc free assez grand
 	t_block *b = zone->blocks;
 
 	while (b) {

@@ -1,33 +1,17 @@
 #include "malloc.h"
 
-static void	*find_free_block(t_block *block) { // cherche un bloc free, peu importe sa taille
-	while (block) {
-		if (block->free)
-			return block;
-		block = block->next;
+void	fuse_free_blocks(t_zone *zone) {
+	t_block *curr = zone->blocks;
+	if (!curr->next) // un seul bloc, rien a fusionner
+		return ;
+	
+	while (curr) {
+		while (curr->free && curr->next && curr->next->free) {
+			curr->size += curr->next->size + sizeof(t_block);
+			curr->next = curr->next->next;
+		}
+		curr = curr->next;
 	}
-	return NULL;
-}
-
-void	fuse_block(t_block *block) {
-	t_block *free_block = find_free_block(block);
-
-	if (!free_block) { // il n'y a plus de bloc free, le devenir. normalement impossible
-		printf("ERROR, IMPOSSIBLE CASE\n");
-		//block->free = 1;
-		// TODO trouver un moyen de le bouger a la fin (un swap en loop jusqu'au bout ?)
-	}
-	else { // il y a de l'espace libre, fusionner notre bloc avec lui
-		block->size += free_block->size + sizeof(t_block);
-		block->free = 1;
-		block->next = NULL; // TODO ne marche que si le next actuel est notre free_block
-
-		// UTILISER DIFFERENT BLOCS FREE, NE PLUS SE LIMITER A UN SEUL EN FIN DE ZONE
-
-		// modifier directement la memoire libre et relier les deux blocs adjacents a celui la, creerait un vide dans la memoire
-		// il faut directement deplacer les blocs
-	}
-
 }
 
 void	ft_free(void *ptr) {
@@ -37,26 +21,30 @@ void	ft_free(void *ptr) {
 		return ;
 
 	t_block *block = ptr - sizeof(t_block);
+	if (block->free)
+		return ;
 
 	if (block->size <= MED_MAX_BYTES) {
-		fuse_block(block);
-		if (block->size <= TINY_ZONE_SIZE
-				&& z_tiny->size == block->size + sizeof(t_block) + sizeof(t_zone)) { // la zone tiny est vide
-			munmap(z_tiny, z_tiny->size);
-			z_tiny = NULL;
-		}
-		else if (block->size > TINY_ZONE_SIZE && block->size <= MED_ZONE_SIZE
-				&& z_med->size == block->size + sizeof(t_block) + sizeof(t_zone)) { // la zone tiny est vide
-			munmap(z_med, z_med->size);
-			z_med = NULL;
-		}
-		return ;
+		t_zone *zone = z_med;
+		if (block->size <= TINY_MAX_BYTES)
+			zone = z_tiny;
+		
+		block->free = 1;
+		fuse_free_blocks(zone);
 	} else {
-		t_zone *zone = (void *)block - sizeof(t_zone); // un seul block par zone pour la large, donc on peut facilement remonter
-		printf("%ld %ld\n", zone->size, block->size);
-		zone->blocks->free = 1;
-		//munmap(zone, zone->size);
-		// TODO remove cette zone de la liste chainee des zones, pour eviter le segfault. rattacher les zones adjancentes et essayer de les deplacer pour eviter le vide
-		// TODO si c'est la derniere, la zone large devient nulle
+		t_zone *zone = (void *)block - sizeof(t_zone); // un seul bloc par zone pour la large, donc on peut facilement la remonter
+		t_zone *curr = z_big;
+		t_zone *previous = NULL;
+
+		while (curr) {
+			if (curr == zone) {
+				if (!previous) // si pas de precedente, alors c'est la premiere (z_big), on fait de la next la nouvelle premiere
+					z_big = curr->next;
+				else // sinon, on rattache la precedente a la suivante
+					previous->next = curr->next;
+			}
+			previous = curr;
+			curr = curr->next;
+		}
 	}
 }

@@ -2,57 +2,131 @@
 
 #include <string.h>
 
-void	test_hundred_malloc() { // TODO (need free)
-	// Test the 100 mallocs minimum per zone
-	/*for (int i = 0; i < 100; i++) {
-		void *ptr = ft_malloc(TINY_MAX_BYTES);
-		if (!ptr) {
-			printf("ERROR! Failed malloc %d/100 (no space left in zone)\n", i + 1);
-			return 1;
-		}
+void	test_hundred_malloc() {
+	void *ptr[100];
+
+	for (int i = 0; i < 100; i++) {
+		ptr[i] = ft_malloc(TINY_MAX_BYTES);
+		if (!ptr[i])
+			write(2, "Error!\n", 6);
 	}
-	printf("The 100 mallocs were successfull.\n");
-	return 0;*/
+	for (int i = 0; i < 100; i++) {
+		ft_free(ptr[i]);
+		ptr[i] = ft_malloc(MED_MAX_BYTES);
+		if (!ptr[i])
+			write(2, "Error!\n", 6);
+	}
+	for (int i = 0; i < 100; i++) {
+		ft_free(ptr[i]);
+		ptr[i] = ft_malloc(MED_MAX_BYTES * 10);
+		if (!ptr[i])
+			write(2, "Error!\n", 6);
+	}
+	for (int i = 0; i < 100; i++) {
+		ft_free(ptr[i]);
+	}
+	show_alloc_mem();
+	write(1, "\n", 1);
 }
 
-int main(void) {
-
-	/*ft_malloc(0);
-	ft_malloc(1);
-	ft_malloc(7);
-	ft_malloc(9);
-	ft_malloc(17);
-	ft_malloc(TINY_MAX_BYTES + 1);
-	ft_malloc(TINY_MAX_BYTES + 9);
-	ft_malloc(TINY_MAX_BYTES + 17);
-	ft_malloc(MED_MAX_BYTES + 1);
-	ft_malloc(MED_MAX_BYTES + 9);
-	ft_malloc(MED_MAX_BYTES + 17);*/
+void	test_double() {
 	void *a = ft_malloc(1);
 	void *b = ft_malloc(1);
 	show_alloc_mem();
 	ft_free(a);
 	show_alloc_mem();
+	a = ft_malloc(1);
+	show_alloc_mem();
 	ft_free(b);
 	show_alloc_mem();
-	write(0, "\n", 1);
+	ft_free(a);
+	show_alloc_mem();
+	write(1, "\n", 1);
 
-	/*a = ft_malloc(TINY_MAX_BYTES + 1);
+	a = ft_malloc(TINY_MAX_BYTES + 1);
+	b = ft_malloc(TINY_MAX_BYTES + 1);
+	show_alloc_mem();
+	ft_free(a);
+	show_alloc_mem();
+	a = ft_malloc(TINY_MAX_BYTES + 1);
+	show_alloc_mem();
+	ft_free(b);
+	show_alloc_mem();
+	ft_free(a);
+	show_alloc_mem();
+	write(1, "\n", 1);
+
+	a = ft_malloc(MED_MAX_BYTES + 1);
+	b = ft_malloc(MED_MAX_BYTES + 1);
+	show_alloc_mem();
+	ft_free(a);
+	show_alloc_mem();
+	a = ft_malloc(MED_MAX_BYTES + 1);
+	show_alloc_mem();
+	ft_free(b);
+	show_alloc_mem();
+	ft_free(a);
+	show_alloc_mem();
+	write(1, "\n", 1);
+}
+
+void test_triple() {
+	void *a = ft_malloc(1);
+	void *b = ft_malloc(1);
+	void *c = ft_malloc(1);
+	show_alloc_mem();
+	ft_free(b);
+	show_alloc_mem();
+	b = ft_malloc(1);
+	show_alloc_mem();
+	ft_free(a);
+	show_alloc_mem();
+	ft_free(b);
+	show_alloc_mem();
+	ft_free(c);
+	show_alloc_mem();
+	write(1, "\n", 1);
+
+	a = ft_malloc(TINY_MAX_BYTES + 1);
+	b = ft_malloc(TINY_MAX_BYTES + 1);
+	c = ft_malloc(TINY_MAX_BYTES + 1);
+	show_alloc_mem();
+	ft_free(b);
+	show_alloc_mem();
 	b = ft_malloc(TINY_MAX_BYTES + 1);
 	show_alloc_mem();
 	ft_free(a);
 	show_alloc_mem();
 	ft_free(b);
 	show_alloc_mem();
-	write(0, "\n", 1);
+	ft_free(c);
+	show_alloc_mem();
+	write(1, "\n", 1);
 
 	a = ft_malloc(MED_MAX_BYTES + 1);
 	b = ft_malloc(MED_MAX_BYTES + 1);
+	c = ft_malloc(MED_MAX_BYTES + 1);
 	show_alloc_mem();
 	ft_free(b);
 	show_alloc_mem();
+	b = ft_malloc(MED_MAX_BYTES + 1);
+	show_alloc_mem();
 	ft_free(a);
-	show_alloc_mem();*/
+	show_alloc_mem();
+	ft_free(b);
+	show_alloc_mem();
+	ft_free(c);
+	show_alloc_mem();
+	write(1, "\n", 1);
+}
+
+int main(void) {
+
+	test_hundred_malloc();
+	
+	test_double();
+	test_triple();
+
 	return 0;
 }
 
@@ -60,5 +134,4 @@ int main(void) {
 TODO LIST:
 - transformer les 3 globals en un seul array
 - realloc
-- pouvoir free le milieu / debut d'une zone (fonctionne uniquement sur le dernier bloc)
 */
