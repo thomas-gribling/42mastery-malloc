@@ -29,6 +29,21 @@ void	test_hundred_malloc() {
 	write(1, "\n", 1);
 }
 
+void	test_speed_thousand_malloc() {
+	void *ptr[3];
+
+	for (int i = 0; i < 1000; i++) {
+		ptr[0] = ft_malloc(TINY_MAX_BYTES);
+		ptr[1] = ft_malloc(MED_MAX_BYTES);
+		ptr[2] = ft_malloc(MED_MAX_BYTES * 10);
+		ft_free(ptr[0]);
+		ft_free(ptr[1]);
+		ft_free(ptr[2]);
+	}
+	show_alloc_mem();
+	write(1, "\n", 1);
+}
+
 void	test_double() {
 	void *a = ft_malloc(1);
 	void *b = ft_malloc(1);
@@ -123,6 +138,7 @@ void test_triple() {
 int main(void) {
 
 	test_hundred_malloc();
+	//test_speed_thousand_malloc();
 	
 	test_double();
 	test_triple();

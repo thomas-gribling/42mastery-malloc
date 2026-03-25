@@ -48,8 +48,9 @@ void	show_alloc_mem() {
 		return ;
 	}
 
+	size_t total_size = 0;
 	curr = NULL;
-	if (!is_zone_empty(zo[0])) {//!is_zone_empty(zo[0])) {
+	if (!is_zone_empty(zo[0])) {
 		ft_putstr("TINY : ");
 		ft_putaddress((unsigned long)zo[0], 1);
 
@@ -69,6 +70,7 @@ void	show_alloc_mem() {
 				ft_putstr(" : ");
 				ft_putsize(curr->size);
 				ft_putstr(" bytes\n");
+				total_size += curr->size;
 			} else { // temporary, shows free blocks
 				ft_putaddress((unsigned long)(curr + 1), 1);
 				ft_putstr(" - ");
@@ -102,6 +104,7 @@ void	show_alloc_mem() {
 				ft_putstr(" : ");
 				ft_putsize(curr->size);
 				ft_putstr(" bytes\n");
+				total_size += curr->size;
 			} else { // temporary, shows free blocks
 				ft_putaddress((unsigned long)(curr + 1), 1);
 				ft_putstr(" - ");
@@ -128,8 +131,13 @@ void	show_alloc_mem() {
 				ft_putstr(" : ");
 				ft_putsize(curr2->size);
 				ft_putstr(" bytes\n");
+				total_size += curr2->size;
 			}
 			curr2 = curr2->next;
 		}
 	}
+
+	ft_putstr("Total : ");
+	ft_putsize(total_size);
+	ft_putstr(" bytes\n");
 }

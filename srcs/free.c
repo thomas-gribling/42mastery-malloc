@@ -33,7 +33,6 @@ void	ft_free(void *ptr) {
 		block->free = 1;
 		fuse_free_blocks(zone);
 		if (is_zone_empty(zone)) {
-			printf("ZONE IS NOW EMPTY %lu\n", zone->size);
 			munmap(zo[zone_id], zone->size);
 			zo[zone_id] = NULL;
 		}
