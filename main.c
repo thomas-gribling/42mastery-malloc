@@ -137,11 +137,42 @@ void test_triple() {
 
 int main(void) {
 
-	test_hundred_malloc();
+	/*test_hundred_malloc();
 	//test_speed_thousand_malloc();
 	
 	test_double();
-	test_triple();
+	test_triple();*/
+
+	// Realloc quand pas assez de place
+	char *a = NULL;
+	char *b = NULL;
+	a = ft_realloc(a, 5); // essayer de fix pour un undefine pointer
+	b = ft_realloc(b, 5);
+	show_alloc_mem();
+	a = ft_realloc(a, 9);
+	show_alloc_mem();
+	ft_free(a);
+	ft_free(b);
+	show_alloc_mem();
+	write(1, "\n", 1);
+
+	// Realloc quand assez de place
+	a = NULL;
+	b = NULL;
+	char *c = NULL;
+	a = ft_realloc(a, 1);
+	b = ft_realloc(b, 1);
+	c = ft_realloc(c, 1);
+	show_alloc_mem();
+	ft_free(b);
+	show_alloc_mem();
+	a = ft_realloc(a, 9);
+	show_alloc_mem();
+	ft_free(a);
+	ft_free(b);
+	ft_free(c);
+	show_alloc_mem();
+	write(1, "\n", 1);
 
 	return 0;
 }

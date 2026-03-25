@@ -11,7 +11,7 @@ CC = gcc
 CFLAGS = -fPIC -Iinclude
 LDFLAGS = -shared
 
-FILES = malloc.c free.c show_alloc_mem.c
+FILES = malloc.c free.c realloc.c show_alloc_mem.c
 OBJECTS = $(addprefix $(SRCS), $(FILES:.c=.o))
 
 %.o: %.c
