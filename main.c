@@ -156,7 +156,7 @@ int main(void) {
 	show_alloc_mem();
 	write(1, "\n", 1);
 
-	// Realloc quand assez de place
+	// Realloc quand pile la place
 	a = NULL;
 	b = NULL;
 	char *c = NULL;
@@ -166,10 +166,26 @@ int main(void) {
 	show_alloc_mem();
 	ft_free(b);
 	show_alloc_mem();
+	a = ft_realloc(a, 40);
+	show_alloc_mem();
+	ft_free(a);
+	ft_free(c);
+	show_alloc_mem();
+	write(1, "\n", 1);
+
+	// Realloc quand assez de place mais pas pour le bloc
+	a = NULL;
+	b = NULL;
+	c = NULL;
+	a = ft_realloc(a, 1);
+	b = ft_realloc(b, 1);
+	c = ft_realloc(c, 1);
+	show_alloc_mem();
+	ft_free(b);
+	show_alloc_mem();
 	a = ft_realloc(a, 9);
 	show_alloc_mem();
 	ft_free(a);
-	ft_free(b);
 	ft_free(c);
 	show_alloc_mem();
 	write(1, "\n", 1);
