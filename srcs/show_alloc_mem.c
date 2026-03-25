@@ -22,11 +22,11 @@ static void	ft_putaddress(unsigned long address, int first) {
 	write(1, &c, 1);
 }
 
-static int	is_zone_empty(t_zone *zone) {
+int	is_zone_empty(t_zone *zone) {
 	if (!zone)
 		return 1;
 	
-	if (zone == zo[2]) {
+	if (zo[2] && zone == zo[2]) {
 		if (!zone->next && (!zone->blocks || zone->blocks->free))
 			return 1;
 	}
@@ -49,7 +49,7 @@ void	show_alloc_mem() {
 	}
 
 	curr = NULL;
-	if (!is_zone_empty(zo[0])) {
+	if (!is_zone_empty(zo[0])) {//!is_zone_empty(zo[0])) {
 		ft_putstr("TINY : ");
 		ft_putaddress((unsigned long)zo[0], 1);
 

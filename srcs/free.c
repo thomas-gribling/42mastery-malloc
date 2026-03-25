@@ -25,23 +25,31 @@ void	ft_free(void *ptr) {
 		return ;
 
 	if (block->size <= MED_MAX_BYTES) {
-		t_zone *zone = zo[1];
+		int zone_id = 1;
 		if (block->size <= TINY_MAX_BYTES)
-			zone = zo[0];
+			zone_id = 0;
+		t_zone *zone = zo[zone_id];
 		
 		block->free = 1;
 		fuse_free_blocks(zone);
+		if (is_zone_empty(zone)) {
+			printf("ZONE IS NOW EMPTY %lu\n", zone->size);
+			munmap(zo[zone_id], zone->size);
+			zo[zone_id] = NULL;
+		}
 	} else {
 		t_zone *zone = (void *)block - sizeof(t_zone); // un seul bloc par zone pour la large, donc on peut facilement la remonter
 		t_zone *curr = zo[2];
 		t_zone *previous = NULL;
 
 		while (curr) {
-			if (curr == zone) { // AJOUTER MUNMAP !!!!!!!
+			if (curr == zone) {
 				if (!previous) // si pas de precedente, alors c'est la premiere (z_big), on fait de la next la nouvelle premiere
 					zo[2] = curr->next;
 				else // sinon, on rattache la precedente a la suivante
 					previous->next = curr->next;
+				munmap(curr, curr->size + sizeof(t_zone) + sizeof(t_block));
+				break ;
 			}
 			previous = curr;
 			curr = curr->next;
