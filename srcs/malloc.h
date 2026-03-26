@@ -6,9 +6,9 @@
 
 #include <stdio.h> // pour les tests
 
-#define TINY_MAX_BYTES 64 // 1 - 64B
+#define TINY_MAX_BYTES 256 // 1B - 256B
 #define TINY_ZONE_SIZE getpagesize() * 16 // 64KB
-#define MED_MAX_BYTES 512 // 65 - 512B
+#define MED_MAX_BYTES 2048 // 257B - 2048B
 #define MED_ZONE_SIZE getpagesize() * 128 // 512KB
 
 typedef struct s_block
