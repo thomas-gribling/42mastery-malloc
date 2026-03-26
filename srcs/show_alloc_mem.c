@@ -39,7 +39,7 @@ int	is_zone_empty(t_zone *zone) {
 	return 0;
 }
 
-void	show_alloc_mem() { // good version
+void	show_alloc_mem2() { // good version
 	t_block *curr;
 	t_zone *curr2;
 
@@ -114,7 +114,7 @@ void	show_alloc_mem() { // good version
 	ft_putstr(" bytes\n");
 }
 
-void	show_alloc_mem2() { // DEBUG VERSION
+void	show_alloc_mem() { // DEBUG VERSION
 	t_block *curr;
 	t_zone *curr2;
 

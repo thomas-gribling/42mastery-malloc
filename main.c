@@ -135,60 +135,89 @@ void test_triple() {
 	write(1, "\n", 1);
 }
 
+#include <stdlib.h>
+
 int main(void) {
 
-	/*test_hundred_malloc();
+	test_hundred_malloc();
 	//test_speed_thousand_malloc();
 	
-	test_double();
+	/*test_double();
 	test_triple();*/
 
-	// Realloc quand pas assez de place
-	char *a = NULL;
-	char *b = NULL;
-	a = ft_realloc(a, 5); // essayer de fix pour un undefine pointer
-	b = ft_realloc(b, 5);
-	show_alloc_mem();
-	a = ft_realloc(a, 9);
-	show_alloc_mem();
-	ft_free(a);
-	ft_free(b);
-	show_alloc_mem();
-	write(1, "\n", 1);
+	// Realloc dans une autre zone
+	{
+		void *a = ft_malloc(MED_MAX_BYTES);
+		void *b = ft_malloc(TINY_MAX_BYTES);
+		show_alloc_mem();
+		a = ft_realloc(a, 1);
+		show_alloc_mem();
+		b = ft_realloc(b, TINY_MAX_BYTES + 1);
+		show_alloc_mem();
+		ft_free(a);
+		ft_free(b);
+		show_alloc_mem();
+		write(1, "\n", 1);
+	}
 
-	// Realloc quand pile la place
-	a = NULL;
-	b = NULL;
-	char *c = NULL;
-	a = ft_realloc(a, 1);
-	b = ft_realloc(b, 1);
-	c = ft_realloc(c, 1);
-	show_alloc_mem();
-	ft_free(b);
-	show_alloc_mem();
-	a = ft_realloc(a, 40);
-	show_alloc_mem();
-	ft_free(a);
-	ft_free(c);
-	show_alloc_mem();
-	write(1, "\n", 1);
+	// Realloc plus petit avec bloc free adjacent
+	{
+		void *a = ft_malloc(8 * 2);
+		void *b = ft_malloc(TINY_MAX_BYTES);
+		void *c = ft_malloc(8);
+		show_alloc_mem();
+		ft_free(b);
+		show_alloc_mem();
+		a = ft_realloc(a, 8);
+		show_alloc_mem();
+		ft_free(a);
+		ft_free(c);
+		show_alloc_mem();
+		write(1, "\n", 1);
+	}
 
-	// Realloc quand assez de place mais pas pour le bloc
-	a = NULL;
-	b = NULL;
-	c = NULL;
-	a = ft_realloc(a, 1);
-	b = ft_realloc(b, 1);
-	c = ft_realloc(c, 1);
-	show_alloc_mem();
-	ft_free(b);
-	show_alloc_mem();
-	a = ft_realloc(a, 9);
-	show_alloc_mem();
-	ft_free(a);
-	ft_free(c);
-	show_alloc_mem();
-	write(1, "\n", 1);
+	// Realloc plus petit sans free adjacent mais suffisamment grand pour split en un nouveau free
+	{
+		void *a = ft_malloc(8 * 2 + 32);
+		void *b = ft_malloc(8);
+		show_alloc_mem();
+		a = ft_realloc(a, 8 * 2);
+		show_alloc_mem();
+		ft_free(a);
+		ft_free(b);
+		show_alloc_mem();
+		write(1, "\n", 1);
+	}
+
+	// Realloc plus petit sans bloc free adjacent
+	{
+		void *a = ft_malloc(8 * 2);
+		void *b = ft_malloc(8);
+		show_alloc_mem();
+		a = ft_realloc(a, 8);
+		show_alloc_mem();
+		ft_free(a);
+		ft_free(b);
+		show_alloc_mem();
+		write(1, "\n", 1);
+	}
+
+	// Realloc plus grand avec bloc free adjacent (pile la place)
+
+	// Realloc plus grand avec bloc free adjacent (plus grand que necessaire et suffisament pour lui prendre)
+
+	// Realloc plus grand quand pas assez de place
+	{
+		void *a = ft_malloc(8 * 2);
+		void *b = ft_malloc(8);
+		show_alloc_mem();
+		a = ft_realloc(a, 8);
+		show_alloc_mem();
+		ft_free(a);
+		ft_free(b);
+		show_alloc_mem();
+		write(1, "\n", 1);
+	}
 
 	return 0;
 }
