@@ -73,10 +73,12 @@ void	*ft_realloc(void *ptr, size_t size) {
 	// Si on demande une taille plus petite
 	if (size < block->size) {
 		if (block->next && block->next->free) { // on rajoute de l'espace libre au bloc adjacent deja free
+			t_block *tmp_block = block->next->next;
+			size_t tmp_size = block->next->size;
 			t_block *new = (t_block *)((char *)block + sizeof(t_block) + size);
-			new->size = block->next->size + (block->size - size);
+			new->size = tmp_size + (block->size - size);
 			new->free = 1;
-			new->next = block->next->next;
+			new->next = tmp_block;
 			block->size = size;
 			block->next = new;
 			return ptr;
