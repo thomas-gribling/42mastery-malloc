@@ -3,9 +3,7 @@
 t_zone *zo[3] = {NULL, NULL, NULL};
 
 t_zone	*create_zone(size_t zone_size) {
-	t_zone *zone;
-
-	zone = mmap(NULL, zone_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+	t_zone *zone = mmap(NULL, zone_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (zone == MAP_FAILED)
 		return NULL;
 	
@@ -50,7 +48,7 @@ void split_block(t_block *block, size_t size) {
 	block->next = new;
 }
 
-void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) {
+void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) { // opti l'argument zone
 	t_zone *curr_zone = *zone;
 	t_block *block;
 
@@ -74,8 +72,7 @@ void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) {
 }
 
 void *alloc_to_large(size_t size) { // utiliser le next de t_zone, chaque alloc est une zone qui possede un block unique (prenant toute la taille)
-	t_zone *zone;
-	zone = mmap(NULL, size + sizeof(t_zone) + sizeof(t_block), PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+	t_zone *zone = mmap(NULL, size + sizeof(t_zone) + sizeof(t_block), PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (zone == MAP_FAILED)
 		return NULL;
 	
@@ -103,7 +100,7 @@ void *alloc_to_large(size_t size) { // utiliser le next de t_zone, chaque alloc 
 }
 
 void	*ft_malloc(size_t size) {
-	if (size == 0)
+	if ((int)size <= 0)
 		return NULL;
 	
 	size = (size + 7) & ~7; // aligner la taille du malloc sur un multiple de 8

@@ -40,6 +40,9 @@ void	*alloc_new_ptr(void *ptr, size_t size) { // alloue un nouveau pointeur, cop
 }
 
 void	*ft_realloc(void *ptr, size_t size) {
+	if ((int)size <= 0)
+		return NULL;
+
 	size = (size + 7) & ~7;
 
 	if (!ptr || !is_allocated(ptr))
