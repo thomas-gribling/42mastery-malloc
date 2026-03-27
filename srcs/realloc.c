@@ -103,12 +103,12 @@ void	*ft_realloc(void *ptr, size_t size) {
 			block->next = block->next->next;
 			return ptr;
 		} else if (block->next && block->next->free && block->next->size >= 8 + missing_size) { // bloc assez grand pour y recuperer de l'espace sans le faire descendre sous le minimum
-			t_block *tmp = block->next->next; // le nouveau bloc va ecraser block->next, il faut recup les infos avant
+			t_block *tmp_block = block->next->next; // le nouveau bloc va ecraser block->next, il faut recup les infos avant
 			size_t tmp_size = block->next->size;
 			t_block *new = (t_block *)((char *)block + sizeof(t_block) + size);
 			new->size = tmp_size - missing_size;
 			new->free = 1;
-			new->next = tmp;
+			new->next = tmp_block;
 			block->size += missing_size;
 			block->next = new;
 			return ptr;

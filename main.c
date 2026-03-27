@@ -1,7 +1,5 @@
 #include "srcs/malloc.h"
 
-#include <string.h>
-
 void	test_hundred_malloc() {
 	void *ptr[100];
 
@@ -85,7 +83,7 @@ void	test_double() {
 	write(1, "\n", 1);
 }
 
-void test_triple() {
+void	test_triple() {
 	void *a = ft_malloc(1);
 	void *b = ft_malloc(1);
 	void *c = ft_malloc(1);
@@ -135,16 +133,7 @@ void test_triple() {
 	write(1, "\n", 1);
 }
 
-#include <stdlib.h>
-
-int main(void) {
-
-	test_hundred_malloc();
-	//test_speed_thousand_malloc();
-	
-	/*test_double();
-	test_triple();*/
-
+void	test_realloc_basic() {
 	// Realloc dans une autre zone
 	{
 		void *a = ft_malloc(MED_MAX_BYTES);
@@ -160,6 +149,23 @@ int main(void) {
 		write(1, "\n", 1);
 	}
 
+	// Realloc dans la zone large
+	{
+		void *a = ft_malloc(MED_MAX_BYTES * 10);
+		void *b = ft_malloc(MED_MAX_BYTES * 10);
+		show_alloc_mem();
+		a = ft_realloc(a, MED_MAX_BYTES * 20);
+		show_alloc_mem();
+		b = ft_realloc(b, MED_MAX_BYTES + 1);
+		show_alloc_mem();
+		ft_free(a);
+		ft_free(b);
+		show_alloc_mem();
+		write(1, "\n", 1);
+	}
+}
+
+void	test_realloc_smaller() {
 	// Realloc plus petit avec bloc free adjacent
 	{
 		void *a = ft_malloc(8 * 2);
@@ -201,10 +207,40 @@ int main(void) {
 		show_alloc_mem();
 		write(1, "\n", 1);
 	}
+}
 
+void	test_realloc_bigger () {
 	// Realloc plus grand avec bloc free adjacent (pile la place)
+	{
+		void *a = ft_malloc(8);
+		void *b = ft_malloc(8);
+		void *c = ft_malloc(8);
+		show_alloc_mem();
+		ft_free(b);
+		show_alloc_mem();
+		a = ft_realloc(a, 8 + 32);
+		show_alloc_mem();
+		ft_free(a);
+		ft_free(c);
+		show_alloc_mem();
+		write(1, "\n", 1);
+	}
 
 	// Realloc plus grand avec bloc free adjacent (plus grand que necessaire et suffisament pour lui prendre)
+	{
+		void *a = ft_malloc(8);
+		void *b = ft_malloc(8 * 2);
+		void *c = ft_malloc(8);
+		show_alloc_mem();
+		ft_free(b);
+		show_alloc_mem();
+		a = ft_realloc(a, 8 * 2);
+		show_alloc_mem();
+		ft_free(a);
+		ft_free(c);
+		show_alloc_mem();
+		write(1, "\n", 1);
+	}
 
 	// Realloc plus grand quand pas assez de place
 	{
@@ -218,6 +254,19 @@ int main(void) {
 		show_alloc_mem();
 		write(1, "\n", 1);
 	}
+}
+
+int main(void) {
+
+	test_hundred_malloc();
+	//test_speed_thousand_malloc();
+	
+	test_double();
+	test_triple();
+	
+	/*test_realloc_basic();
+	test_realloc_smaller();
+	test_realloc_bigger();*/
 
 	return 0;
 }
