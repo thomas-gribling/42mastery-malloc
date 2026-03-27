@@ -57,12 +57,10 @@ void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) {
 	if (curr_zone) {
 		block = find_free_block(curr_zone, size);
 		if (block) {
-			if ((block->size >= size + sizeof(t_block)) || (block->size == size)) // inutile ?
-				split_block(block, size);
-			else
-				return NULL;
+			split_block(block, size);
 			return (block + 1);
-		}
+		} else
+			return NULL;
 	}
 
 	curr_zone = create_zone(zone_size);

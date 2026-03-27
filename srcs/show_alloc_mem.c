@@ -39,7 +39,7 @@ int	is_zone_empty(t_zone *zone) {
 	return 0;
 }
 
-void	show_alloc_mem() { // good version
+void	show_alloc_mem2() { // good version
 	t_block *curr;
 	t_zone *curr2;
 
@@ -114,12 +114,12 @@ void	show_alloc_mem() { // good version
 	ft_putstr(" bytes\n");
 }
 
-void	show_alloc_mem2() { // DEBUG VERSION
+void	show_alloc_mem() { // DEBUG VERSION
 	t_block *curr;
 	t_zone *curr2;
 
 	if (is_zone_empty(zo[0]) && is_zone_empty(zo[1]) && is_zone_empty(zo[2])) {
-		ft_putstr("No memory allocated.\n");
+		ft_putstr("No memory allocated.\n\n");
 		return ;
 	}
 
@@ -254,5 +254,5 @@ void	show_alloc_mem2() { // DEBUG VERSION
 
 	ft_putstr("Total : ");
 	ft_putsize(total_size);
-	ft_putstr(" bytes\n");
+	ft_putstr(" bytes\n\n");
 }

@@ -1,0 +1,1 @@
+gcc main.c tests/tests.c -L. -lft_malloc -Wl,-rpath=. -o malloc_tests
