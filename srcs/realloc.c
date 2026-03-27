@@ -22,7 +22,7 @@ int	is_allocated(void *ptr) { // il est impossible de fix entierement des condit
 	if (zo[2]) {
 		t_zone *curr = zo[2];
 		while (curr) {
-			if ((void *)(curr + sizeof(t_zone)) == (void *)block)
+			if ((t_block *)(curr + 1) == block)
 				return 1;
 			curr = curr->next;
 		}
@@ -36,7 +36,7 @@ void	*alloc_new_ptr(void *ptr, size_t size) { // alloue un nouveau pointeur, cop
 		new_ptr[n] = ((char*)ptr)[n];
 	}
 	ft_free(ptr);
-	return new_ptr;
+	return (void *)new_ptr;
 }
 
 void	*ft_realloc(void *ptr, size_t size) {
@@ -67,12 +67,8 @@ void	*ft_realloc(void *ptr, size_t size) {
 		return alloc_new_ptr(ptr, size);
 	
 	// Si on est en zone large
-	if (zone_id == 2) { // les mmap ne se suivent pas dans la memoire, pas besoin de reallouer
-		t_zone *zone = (void *)block - sizeof(t_zone);
-		zone->size = size;
-		block->size = size;
-		return ptr;
-	}
+	if (zone_id == 2)
+		return alloc_new_ptr(ptr, size);
 	
 	// Si on demande une taille plus petite
 	if (size < block->size) {
@@ -85,7 +81,7 @@ void	*ft_realloc(void *ptr, size_t size) {
 			block->next = new;
 			return ptr;
 		}
-		else if (block->next && !block->next->free && block->size - size >= sizeof(t_block) + 8) { // pas de bloc free adjacent, mais assez de size retiree pour en creer un de taille minimale (8 bytes)
+		else if (block->next && !block->next->free && block->size - size >= sizeof(t_block) + 8) { // pas de bloc free adjacent, mais assez de size pour en creer un
 			t_block *new = (t_block *)((char *)block + sizeof(t_block) + size);
 			new->size = block->size - size - sizeof(t_block);
 			new->free = 1;
@@ -98,6 +94,25 @@ void	*ft_realloc(void *ptr, size_t size) {
 	}
 
 	// Verifier s'il y a la place dans un bloc adjacent
+	if (size > block->size) {
+		size_t missing_size = size - block->size;
+		if (block->next && block->next->free && block->next->size + sizeof(t_block) == missing_size) { // pile assez de place pour absorber le bloc free adjacent
+			block->size += missing_size;
+			block->next = block->next->next;
+			return ptr;
+		} else if (block->next && block->next->free && block->next->size >= 8 + missing_size) { // bloc assez grand pour y recuperer de l'espace sans le faire descendre sous le minimum
+			t_block *tmp = block->next->next; // le nouveau bloc va ecraser block->next, il faut recup les infos avant
+			size_t tmp_size = block->next->size;
+			t_block *new = (t_block *)((char *)block + sizeof(t_block) + size);
+			new->size = tmp_size - missing_size;
+			new->free = 1;
+			new->next = tmp;
+			block->size += missing_size;
+			block->next = new;
+			return ptr;
+		} else
+			return alloc_new_ptr(ptr, size);
+	}
 
 	// Dernier cas, simplement alloc_new_ptr()
 	return alloc_new_ptr(ptr, size);
