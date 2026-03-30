@@ -32,6 +32,8 @@ int	is_allocated(void *ptr) { // il est impossible de fix entierement des condit
 
 void	*alloc_new_ptr(void *ptr, size_t size) { // alloue un nouveau pointeur, copie les donnes et free l'ancien
 	char *new_ptr = ft_malloc(size); // void* pas iterable
+	if (!new_ptr) // pas de place
+		return ptr;
 	for (size_t n = 0; n < size; n++) {
 		new_ptr[n] = ((char*)ptr)[n];
 	}
@@ -41,7 +43,7 @@ void	*alloc_new_ptr(void *ptr, size_t size) { // alloue un nouveau pointeur, cop
 
 void	*ft_realloc(void *ptr, size_t size) {
 	if ((int)size <= 0)
-		return NULL;
+		return ptr;
 
 	size = (size + 7) & ~7;
 
@@ -50,7 +52,7 @@ void	*ft_realloc(void *ptr, size_t size) {
 
 	t_block *block = ptr - sizeof(t_block);
 	if (!block)
-		return NULL;
+		return ptr;
 	
 	if (size == block->size)
 		return ptr;
