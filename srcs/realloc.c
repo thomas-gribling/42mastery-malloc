@@ -42,12 +42,12 @@ void	*alloc_new_ptr(void *ptr, size_t size) { // alloue un nouveau pointeur, cop
 }
 
 void	*ft_realloc(void *ptr, size_t size) {
-	if ((int)size <= 0)
+	if (!ptr || (int)size <= 0)
 		return ptr;
 
 	size = (size + 7) & ~7;
 
-	if (!ptr || !is_allocated(ptr))
+	if (!is_allocated(ptr))
 		return ft_malloc(size);
 
 	t_block *block = ptr - sizeof(t_block);

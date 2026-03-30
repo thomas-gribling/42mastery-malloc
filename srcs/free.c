@@ -19,6 +19,8 @@ void	ft_free(void *ptr) {
 		return ;
 	if (!ptr)
 		return ;
+	if (!is_allocated(ptr))
+		return ;
 
 	t_block *block = ptr - sizeof(t_block);
 	if (block->free)
@@ -43,7 +45,7 @@ void	ft_free(void *ptr) {
 
 		while (curr) {
 			if (curr == zone) {
-				if (!previous) // si pas de precedente, alors c'est la premiere (z_big), on fait de la next la nouvelle premiere
+				if (!previous) // si pas de precedente, alors c'est la premiere (zo[2]), on fait de la next la nouvelle premiere
 					zo[2] = curr->next;
 				else // sinon, on rattache la precedente a la suivante
 					previous->next = curr->next;

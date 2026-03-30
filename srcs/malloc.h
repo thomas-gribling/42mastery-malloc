@@ -34,4 +34,9 @@ void	*ft_realloc(void *ptr, size_t size);
 
 void	show_alloc_mem();
 
-int	is_zone_empty(t_zone *zone);
+int		is_zone_empty(t_zone *zone);
+int		is_allocated(void *ptr);
+
+void	ft_putstr(char *s);
+void	ft_putsize(size_t size);
+void	ft_putaddress(unsigned long address, int first);

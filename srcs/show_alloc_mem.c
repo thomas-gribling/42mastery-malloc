@@ -1,19 +1,19 @@
 #include "malloc.h"
 
-static void	ft_putstr(char *s) {
+void	ft_putstr(char *s) {
 	int	i = -1;
 	while (s[++i])
 		write(1, &s[i], 1);
 }
 
-static void	ft_putsize(size_t size) {
+void	ft_putsize(size_t size) {
 	if (size > 9)
 		ft_putsize(size / 10);
 	char c = size % 10 + '0';
 	write(1, &c, 1);
 }
 
-static void	ft_putaddress(unsigned long address, int first) {
+void	ft_putaddress(unsigned long address, int first) {
 	if (first)
 		ft_putstr("0x");
 	if (address > 15)
@@ -39,7 +39,7 @@ int	is_zone_empty(t_zone *zone) {
 	return 0;
 }
 
-void	show_alloc_mem2() { // good version
+void	show_alloc_mem() { // good version
 	t_block *curr;
 	t_zone *curr2;
 
@@ -112,147 +112,4 @@ void	show_alloc_mem2() { // good version
 	ft_putstr("Total : ");
 	ft_putsize(total_size);
 	ft_putstr(" bytes\n");
-}
-
-void	show_alloc_mem() { // DEBUG VERSION
-	t_block *curr;
-	t_zone *curr2;
-
-	if (is_zone_empty(zo[0]) && is_zone_empty(zo[1]) && is_zone_empty(zo[2])) {
-		ft_putstr("No memory allocated.\n\n");
-		return ;
-	}
-
-	size_t total_size = 0;
-	curr = NULL;
-	if (!is_zone_empty(zo[0])) {
-		ft_putstr("TINY : ");
-		ft_putaddress((unsigned long)zo[0], 1);
-
-		ft_putstr(" ( size = ");
-		ft_putsize(zo[0]->size);
-		ft_putstr(" bytes, size block = ");
-		ft_putsize(zo[0]->size - sizeof(t_zone) - sizeof(t_block));
-		ft_putstr(" bytes)");
-
-		ft_putstr("\n");
-
-		ft_putaddress((unsigned long)((char *)zo[0]), 1);
-		ft_putstr(" - ");
-		ft_putaddress((unsigned long)((char *)zo[0] + sizeof(t_zone) - 1), 1);
-		ft_putstr(" : ");
-		ft_putsize(sizeof(t_zone));
-		ft_putstr(" bytes (ZONE)\n");
-
-		curr = zo[0]->blocks;
-		while (curr) {
-			ft_putaddress((unsigned long)((char *)curr), 1);
-			ft_putstr(" - ");
-			ft_putaddress((unsigned long)((char *)curr + sizeof(t_block) - 1), 1);
-			ft_putstr(" : ");
-			ft_putsize(sizeof(t_block));
-			ft_putstr(" bytes (BLOCK)\n");
-			if (!curr->free) {
-				ft_putaddress((unsigned long)((char *)curr + sizeof(t_block)), 1);
-				ft_putstr(" - ");
-				ft_putaddress((unsigned long)((char *)curr + sizeof(t_block) + curr->size - 1), 1);
-				ft_putstr(" : ");
-				ft_putsize(curr->size);
-				ft_putstr(" bytes\n");
-				total_size += curr->size;
-			} else { // temporary, shows free blocks
-				ft_putaddress((unsigned long)((char *)curr + sizeof(t_block)), 1);
-				ft_putstr(" - ");
-				ft_putaddress((unsigned long)((char *)curr + sizeof(t_block) + curr->size - 1), 1);
-				ft_putstr(" : ");
-				ft_putsize(curr->size);
-				ft_putstr(" bytes (FREE)\n");
-			}
-			curr = curr->next;
-		}
-	}
-
-	curr = NULL;
-	if (!is_zone_empty(zo[1])) {
-		ft_putstr("MEDIUM : ");
-		ft_putaddress((unsigned long)zo[1], 1);
-
-		ft_putstr(" ( size = ");
-		ft_putsize(zo[1]->size);
-		ft_putstr(" bytes, size block = ");
-		ft_putsize(zo[1]->size - sizeof(t_zone) - sizeof(t_block));
-		ft_putstr(" bytes)");
-
-		ft_putstr("\n");
-
-		ft_putaddress((unsigned long)((char *)zo[1]), 1);
-		ft_putstr(" - ");
-		ft_putaddress((unsigned long)((char *)zo[1] + sizeof(t_zone) - 1), 1);
-		ft_putstr(" : ");
-		ft_putsize(sizeof(t_zone));
-		ft_putstr(" bytes (ZONE)\n");
-
-		curr = zo[1]->blocks;
-		while (curr) {
-			ft_putaddress((unsigned long)((char *)curr), 1);
-			ft_putstr(" - ");
-			ft_putaddress((unsigned long)((char *)curr + sizeof(t_block) - 1), 1);
-			ft_putstr(" : ");
-			ft_putsize(sizeof(t_block));
-			ft_putstr(" bytes (BLOCK)\n");
-			if (!curr->free) {
-				ft_putaddress((unsigned long)((char *)curr + sizeof(t_block)), 1);
-				ft_putstr(" - ");
-				ft_putaddress((unsigned long)((char *)curr + sizeof(t_block) + curr->size - 1), 1);
-				ft_putstr(" : ");
-				ft_putsize(curr->size);
-				ft_putstr(" bytes\n");
-				total_size += curr->size;
-			} else { // temporary, shows free blocks
-				ft_putaddress((unsigned long)((char *)curr + sizeof(t_block)), 1);
-				ft_putstr(" - ");
-				ft_putaddress((unsigned long)((char *)curr + sizeof(t_block) + curr->size - 1), 1);
-				ft_putstr(" : ");
-				ft_putsize(curr->size);
-				ft_putstr(" bytes (FREE)\n");
-			}
-			curr = curr->next;
-		}
-	}
-
-	curr2 = NULL;
-	if (!is_zone_empty(zo[2])) {
-		ft_putstr("LARGE : ");
-		ft_putaddress((unsigned long)zo[2], 1);
-		ft_putstr("\n");
-		curr2 = zo[2];
-		while (curr2) {
-			ft_putaddress((unsigned long)((char *)curr2), 1);
-			ft_putstr(" - ");
-			ft_putaddress((unsigned long)((char *)curr2 + sizeof(t_zone) - 1), 1);
-			ft_putstr(" : ");
-			ft_putsize(sizeof(t_zone));
-			ft_putstr(" bytes (ZONE)\n");
-			ft_putaddress((unsigned long)((char *)curr2->blocks), 1);
-			ft_putstr(" - ");
-			ft_putaddress((unsigned long)((char *)curr2->blocks + sizeof(t_block) - 1), 1);
-			ft_putstr(" : ");
-			ft_putsize(sizeof(t_block));
-			ft_putstr(" bytes (BLOCK)\n");
-			if (!curr2->blocks->free) {
-				ft_putaddress((unsigned long)((char *)curr2 + sizeof(t_zone) + sizeof(t_block)), 1);
-				ft_putstr(" - ");
-				ft_putaddress((unsigned long)((char *)curr2 + sizeof(t_zone) + sizeof(t_block) + curr2->size - 1), 1);
-				ft_putstr(" : ");
-				ft_putsize(curr2->size);
-				ft_putstr(" bytes\n");
-				total_size += curr2->size;
-			}
-			curr2 = curr2->next;
-		}
-	}
-
-	ft_putstr("Total : ");
-	ft_putsize(total_size);
-	ft_putstr(" bytes\n\n");
 }
