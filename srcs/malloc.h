@@ -4,8 +4,6 @@
 #include <sys/resource.h>
 #include <sys/mman.h>
 
-#include <stdio.h> // pour les tests
-
 #define TINY_MAX_BYTES 256 // 1B - 256B
 #define TINY_ZONE_SIZE getpagesize() * 16 // 64KB
 #define MED_MAX_BYTES 2048 // 257B - 2048B
@@ -28,9 +26,9 @@ typedef struct s_zone
 
 extern t_zone *zo[3];
 
-void	ft_free(void *ptr);
-void	*ft_malloc(size_t size);
-void	*ft_realloc(void *ptr, size_t size);
+void	free(void *ptr);
+void	*malloc(size_t size);
+void	*realloc(void *ptr, size_t size);
 
 void	show_alloc_mem();
 

@@ -14,7 +14,7 @@ void	fuse_free_blocks(t_zone *zone) {
 	}
 }
 
-void	ft_free(void *ptr) {
+void	free(void *ptr) {
 	if (!zo[0] && !zo[1] && !zo[2])
 		return ;
 	if (!ptr)

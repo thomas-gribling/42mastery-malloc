@@ -14,6 +14,10 @@ void	ft_putsize(size_t size) {
 }
 
 void	ft_putaddress(unsigned long address, int first) {
+	if (!address) {
+		write(1, "(nil)", 5);
+		return ;
+	}
 	if (first)
 		ft_putstr("0x");
 	if (address > 15)

@@ -31,24 +31,24 @@ int	is_allocated(void *ptr) { // il est impossible de fix entierement des condit
 }
 
 void	*alloc_new_ptr(void *ptr, size_t size) { // alloue un nouveau pointeur, copie les donnes et free l'ancien
-	char *new_ptr = ft_malloc(size); // void* pas iterable
+	char *new_ptr = malloc(size); // void* pas iterable
 	if (!new_ptr) // pas de place
 		return ptr;
 	for (size_t n = 0; n < size; n++) {
 		new_ptr[n] = ((char*)ptr)[n];
 	}
-	ft_free(ptr);
+	free(ptr);
 	return (void *)new_ptr;
 }
 
-void	*ft_realloc(void *ptr, size_t size) {
+void	*realloc(void *ptr, size_t size) {
 	if (!ptr || (int)size <= 0)
 		return ptr;
 
 	size = (size + 7) & ~7;
 
 	if (!is_allocated(ptr))
-		return ft_malloc(size);
+		return malloc(size);
 
 	t_block *block = ptr - sizeof(t_block);
 	if (!block)
@@ -88,7 +88,8 @@ void	*ft_realloc(void *ptr, size_t size) {
 			block->next = new;
 			return ptr;
 		}
-		else if (block->next && !block->next->free && block->size - size >= sizeof(t_block) + 8) { // pas de bloc free adjacent, mais assez de size pour en creer un
+		else if ((!block->next || (block->next && !block->next->free))
+			&& block->size - size >= sizeof(t_block) + 8) { // pas de bloc free adjacent, mais assez de size pour en creer un
 			t_block *new = (t_block *)((char *)block + sizeof(t_block) + size);
 			new->size = block->size - size - sizeof(t_block);
 			new->free = 1;

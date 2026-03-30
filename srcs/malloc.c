@@ -99,7 +99,7 @@ void *alloc_to_large(size_t size) { // utiliser le next de t_zone, chaque alloc 
 	return (zone->blocks + 1);
 }
 
-void	*ft_malloc(size_t size) {
+void	*malloc(size_t size) {
 	if ((int)size <= 0)
 		return NULL;
 	
