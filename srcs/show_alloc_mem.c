@@ -43,7 +43,7 @@ int	is_zone_empty(t_zone *zone) {
 	return 0;
 }
 
-void	show_alloc_mem() { // good version
+void	show_alloc_mem() {
 	t_block *curr;
 	t_zone *curr2;
 

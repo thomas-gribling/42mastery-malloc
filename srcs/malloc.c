@@ -71,7 +71,7 @@ void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) { // opti l'ar
 
 }
 
-void *alloc_to_large(size_t size) { // utiliser le next de t_zone, chaque alloc est une zone qui possede un block unique (prenant toute la taille)
+void *alloc_to_large(size_t size) { // utiliser le next de t_zone, chaque malloc est une zone qui possede un bloc unique (prenant toute la taille)
 	t_zone *zone = mmap(NULL, size + sizeof(t_zone) + sizeof(t_block), PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (zone == MAP_FAILED)
 		return NULL;

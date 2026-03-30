@@ -1,7 +1,7 @@
 #include "tests.h"
 
 static void	print_memory() { // changer rapidement la fonction de print utilisee pendant la correc
-	show_alloc_mem_debug();
+	show_alloc_mem();
 }
 
 static int	ft_puterr(char *s) {

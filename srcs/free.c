@@ -17,9 +17,7 @@ void	fuse_free_blocks(t_zone *zone) {
 void	free(void *ptr) {
 	if (!zo[0] && !zo[1] && !zo[2])
 		return ;
-	if (!ptr)
-		return ;
-	if (!is_allocated(ptr))
+	if (!ptr || !is_allocated(ptr))
 		return ;
 
 	t_block *block = ptr - sizeof(t_block);

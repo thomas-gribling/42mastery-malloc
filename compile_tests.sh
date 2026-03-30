@@ -1,1 +1,1 @@
-gcc -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc main.c tests/tests.c -L. -lft_malloc -Wl,-rpath=. -o malloc_tests
+gcc -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc main.c tests/tests.c -L. -lft_malloc -Wl,-rpath=. -o exe_tests

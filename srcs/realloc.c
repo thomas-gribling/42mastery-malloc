@@ -1,6 +1,6 @@
 #include "malloc.h"
 
-int	is_allocated(void *ptr) { // il est impossible de fix entierement des conditional jumps provoques par l'user, mais ca permet de les reduire
+int	is_allocated(void *ptr) {
 	t_block *block = ptr - sizeof(t_block);
 
 	if (zo[0]) {
@@ -32,7 +32,7 @@ int	is_allocated(void *ptr) { // il est impossible de fix entierement des condit
 
 void	*alloc_new_ptr(void *ptr, size_t size) { // alloue un nouveau pointeur, copie les donnes et free l'ancien
 	char *new_ptr = malloc(size); // void* pas iterable
-	if (!new_ptr) // pas de place
+	if (!new_ptr) // plus de place dans la zone
 		return ptr;
 	for (size_t n = 0; n < size; n++) {
 		new_ptr[n] = ((char*)ptr)[n];
@@ -101,7 +101,7 @@ void	*realloc(void *ptr, size_t size) {
 			return alloc_new_ptr(ptr, size);
 	}
 
-	// Verifier s'il y a la place dans un bloc adjacent
+	// Si on demande une taille plus grande
 	if (size > block->size) {
 		size_t missing_size = size - block->size;
 		if (block->next && block->next->free && block->next->size + sizeof(t_block) == missing_size) { // pile assez de place pour absorber le bloc free adjacent

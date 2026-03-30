@@ -1,5 +1,4 @@
 #include "../srcs/malloc.h"
-#include <stdio.h>
 
 void	show_alloc_mem_debug();
 
