@@ -48,12 +48,12 @@ void split_block(t_block *block, size_t size) {
 	block->next = new;
 }
 
-void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) { // opti l'argument zone
-	t_zone *curr_zone = *zone;
+void *alloc_to_zone(int zone_id, size_t size, size_t zone_size) {
+	t_zone *zone = zo[zone_id];
 	t_block *block;
 
-	if (curr_zone) {
-		block = find_free_block(curr_zone, size);
+	if (zone) {
+		block = find_free_block(zone, size);
 		if (block) {
 			split_block(block, size);
 			return (block + 1);
@@ -61,13 +61,13 @@ void *alloc_to_zone(t_zone **zone, size_t size, size_t zone_size) { // opti l'ar
 			return NULL;
 	}
 
-	curr_zone = create_zone(zone_size);
-	if (!curr_zone)
+	zone = create_zone(zone_size);
+	if (!zone)
 		return NULL;
-	split_block(curr_zone->blocks, size);
-	*zone = curr_zone;
+	split_block(zone->blocks, size);
+	zo[zone_id] = zone;
 
-	return (curr_zone->blocks + 1);
+	return (zone->blocks + 1);
 
 }
 
@@ -106,9 +106,9 @@ void	*malloc(size_t size) {
 	size = (size + 7) & ~7; // aligner la taille du malloc sur un multiple de 8
 
 	if (size <= TINY_MAX_BYTES)
-		return alloc_to_zone(&zo[0], size, TINY_ZONE_SIZE);
+		return alloc_to_zone(0, size, TINY_ZONE_SIZE);
 	else if (size <= MED_MAX_BYTES)
-		return alloc_to_zone(&zo[1], size, MED_ZONE_SIZE);
+		return alloc_to_zone(1, size, MED_ZONE_SIZE);
 	else
 		return alloc_to_large(size);
 	return NULL;
